@@ -5,9 +5,7 @@ var express = require('express');
 const fs = require('fs');
 var app = express();
 var PORT = 3000;
-const rl = readline.createInterface({
-    input: fs.createReadStream('logins.txt')
-  });  
+
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }));
 //post for login
