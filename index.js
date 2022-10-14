@@ -1,5 +1,4 @@
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
 var express = require('express');
 var sessions = require("express-session");
 var logged = false
@@ -9,7 +8,7 @@ var app = express();
 var PORT = 3000;
 
 const oneDay = 1000 * 60 * 60 * 170;
-app.use(cookieParser());
+
 app.use(sessions({
   secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
   saveUninitialized: true,
@@ -43,7 +42,7 @@ app.get('/signup.html', function(req, res) {
 app.get('/incorrect.html', function(req, res) {
   res.sendFile(__dirname + "/public/incorrect.html");
 });
-('/signupnotice.html', function(req, res) {
+app.get('/signupnotice.html', function(req, res) {
   res.sendFile(__dirname + "/public/signupnotice.html");
 });
 app.get('/index.html', function(req, res) {
@@ -53,8 +52,6 @@ app.post('/home')
 app.post('/submitlogin', (req, res) => {
   console.log(req.body);
   const data = fs.readFileSync('logins.txt', 'UTF-8')
-
-
   // split the contents by new line
   const lines = data.split(/\r?\n/)
   // print all lines
@@ -64,7 +61,6 @@ app.post('/submitlogin', (req, res) => {
       session = req.session;
       session.userid = req.body.username
       console.log(req.sessionID)
-      
       res.redirect('/')
 
       logged = true
@@ -80,6 +76,7 @@ app.post('/submitlogin', (req, res) => {
   if (logged === false) { res.redirect('/incorrect.html') }
 })
 app.get('/logout', (req, res) => {
+  console.log(`${session.userid} has logged out.`)
   req.session.destroy();
   res.redirect('/');
 });
