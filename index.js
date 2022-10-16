@@ -43,7 +43,7 @@ app.get('/signup.html', function(req, res) {
 app.get('/incorrect.html', function(req, res) {
   res.sendFile(__dirname + "/public/incorrect.html");
 });
-('/signupnotice.html', function(req, res) {
+app.get('/signupnotice.html', function(req, res) {
   res.sendFile(__dirname + "/public/signupnotice.html");
 });
 app.get('/index.html', function(req, res) {
