@@ -48,7 +48,6 @@ app.get('/signupnotice.html', function(req, res) {
 app.get('/index.html', function(req, res) {
   res.sendFile(__dirname + "/public/index.html");
 });
-app.post('/home')
 app.post('/submitlogin', (req, res) => {
   console.log(req.body);
   const data = fs.readFileSync('logins.txt', 'UTF-8')
