@@ -1,14 +1,25 @@
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
+const mongoose = require('mongoose');
 var express = require('express');
+const LoginReq = require('./logins.js');
+const Login = require('./login.js');
+const dbURI = "mongodb+srv://nedyarg:grayden11@elaresources.qwegmih.mongodb.net/elaresources?retryWrites=true&w=majority" 
+mongoose.connect(dbURI).then((result)=>{
+  app.listen(PORT, function(err) {
+  if (err) console.log(err);
+  console.log("Server listening on PORT", PORT);
+}); 
+}).catch((err) => {console.log(err)})
 var sessions = require("express-session");
 var logged = false
 var session;
 const fs = require('fs');
 var app = express();
 var PORT = 3000;
-
+let name = undefined
 const oneDay = 1000 * 60 * 60 * 170;
+app.engine('html', require('ejs').renderFile);
 app.use(cookieParser());
 app.use(sessions({
   secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
@@ -49,41 +60,89 @@ app.get('/signupnotice.html', function(req, res) {
 app.get('/index.html', function(req, res) {
   res.sendFile(__dirname + "/public/index.html");
 });
-app.post('/home')
-app.post('/submitlogin', (req, res) => {
-  console.log(req.body);
-  const data = fs.readFileSync('logins.txt', 'UTF-8')
 
-
-  // split the contents by new line
-  const lines = data.split(/\r?\n/)
-  // print all lines
-  logged = false
-  lines.forEach(line => {
-    if (req.body.password == JSON.parse(line).password && req.body.username == JSON.parse(line).username) {
-      session = req.session;
-      session.userid = req.body.username
-      console.log(req.sessionID)
-      
-      res.redirect('/')
-
-      logged = true
-
-
-    }
-
-
-
-
-
-  })
-  if (logged === false) { res.redirect('/incorrect.html') }
+app.post('/admin', (req,res) =>{
+  LoginReq.findOne({
+    "username": req.body.username
+  }).then((result) =>{
+    login = new Login({
+    username : result.username,
+    password: result.password
+    })
+    login.save()
+    console.log("Sent request to logins database")
+    LoginReq.find()
+      .then((result) => {
+        data = result;
+        mydata = {}
+        for(var key in result){
+          console.log()
+          
+          mydata[result[key].username] = result[key].password
+        }
+        
+        console.log(JSON.parse(JSON.stringify(mydata)))
+      })
+      .then(function(){
+        return res.render(__dirname + '/public/admin.html', {name:JSON.stringify(mydata)})
+      })
+  }).catch((err)=>{console.log(err)})
 })
+app.post('/submitlogin', (req, res) => {
+  if (req.body.username == "admin" && req.body.password == "yallknowben"){
+      LoginReq.find()
+      .then((result) => {
+        data = result;
+        mydata = {}
+        for(var key in result){
+          console.log()
+          
+          mydata[result[key].username] = result[key].password
+        }
+        
+        console.log(JSON.parse(JSON.stringify(mydata)))
+      })
+      .then(function(){
+        return res.render(__dirname + '/public/admin.html', {name:JSON.stringify(mydata)})
+      })
+    console.log("Admin logged in.")
+    
+  }
+  else{
+    LoginReq.find()
+          .then((result) => {
+            mydata = {}
+            for(var key in result){
+              console.log()
+              
+              mydata[result[key].username] = result[key].password
+            }
+            
+            console.log(JSON.parse(JSON.stringify(mydata)))
+          })
+          .then(function(){
+            for(var i in mydata){
+              if (req.body.username == i && req.body.password == mydata[i]){
+                session = req.session;
+                session.userid = req.body.username
+                console.log(`${req.body.username} has logged in.`)
+                return res.redirect('/')
+              }
+            
+            }
+            return res.redirect('/incorrect.html')
+          })
+}})
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
 app.post('/signup', (req, res) => {
+  logins = new LoginReq({
+    username : req.body.username,
+    password: req.body.password
+  })
+  logins.save()
   res.redirect('/signupnotice.html');
   console.log(req.body);
   fs.appendFile('loginrequests.txt', JSON.stringify(req.body) + '\n', err => {
@@ -92,7 +151,3 @@ app.post('/signup', (req, res) => {
     }
   });
 })
-app.listen(PORT, function(err) {
-  if (err) console.log(err);
-  console.log("Server listening on PORT", PORT);
-}); 

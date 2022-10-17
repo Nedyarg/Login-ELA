@@ -1,0 +1,35 @@
+<div id="demoA"></div>
+<form method="post" action = '/admin'>
+        <div class="txt_field">
+          <input type="text" required id = "username" name = 'username'>
+          <span></span>
+          <label>Username</label>
+        </div>
+        <input type="submit" value="Accept">
+        </div>
+      </form>
+<script>var data = "<%= name %>";</script>
+<script>
+window.addEventListener("load", () => {
+  // (B) PARSE THE JSON STRING INTO OBJECT FIRST
+  parsed = data.replaceAll("&#34", '"')
+  parsed = parsed.replaceAll(";", '')
+  data = JSON.parse(parsed)
+  // console.table(data);
+ 
+  // (C) GENERATE TABLE
+  // (C1) CREATE EMPTY TABLE
+  var table = document.createElement("table"), row, cellA, cellB;
+  document.getElementById("demoA").appendChild(table);
+  for (let key in data) {
+    // (C2) ROWS & CELLS
+    row = table.insertRow();
+    cellA = row.insertCell();
+    cellB = row.insertCell();
+ 
+    // (C3) KEY & VALUE
+    cellA.innerHTML = key;
+    cellB.innerHTML = data[key];
+  }
+});
+</script>
