@@ -42,6 +42,7 @@ body{
 .chartB{
   margin: auto;
   width: 50%;
+  height: 10%;
   align-content: center;
   font-size: 5;
 }
