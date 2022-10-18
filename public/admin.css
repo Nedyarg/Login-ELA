@@ -47,7 +47,7 @@ body{
 }
 .table{
   width: 50%;
-  height: 25%;
+  height: relative;
   margin:auto;
   border-collapse: collapse;
 }
