@@ -16,13 +16,12 @@ body{
 .title{
   margin: auto;
   width: 50%;
-  backround: white;
   padding: 10px;
   text-align: center;
 }
 .center{
   margin:auto;
-  margin-top: 200px;
+  margin-top: 100px;
   width: 800px;
   background: white;
   border-radius: 10px;
@@ -86,9 +85,6 @@ input[type="submit"]:hover{
   border: none;
   background: none;
   outline: none;
-}
-.logout{
-  
 }
 .txt_field label{
   position: absolute;
