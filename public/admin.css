@@ -20,8 +20,6 @@ body{
   text-align: center;
 }
 .center{
-  position: absolute;
-  top: 50%;
   margin:auto;
   width: 800px;
   background: white;
